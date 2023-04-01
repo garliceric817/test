@@ -1,0 +1,75 @@
+# This block of code is for mounting non-NFS persistentVolumeClaims and Data
+# Connectors for the CAS server. If you intend to use a non-NFS mounts.
+---
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: cas-add-host-mount
+patch: |-
+    - op: add
+      path: /spec/controllerTemplate/spec/volumes/-
+      value:
+        name: shared-pvc
+        persistentVolumeClaim:
+                claimName: comp-cas-volume-claim
+    - op: add
+      path: /spec/controllerTemplate/spec/containers/0/volumeMounts/-
+      value:
+        name: shared-pvc
+        mountPath: /sas/mnt
+        readOnly: false
+target:
+  group: viya.sas.com
+  kind: CASDeployment
+  # Uncomment this to apply to all CAS servers:
+  name: .*
+  # Uncomment this to apply to one particular named CAS server:
+  #name: {{ NAME-OF-SERVER }}
+  # Uncomment this to apply to the default CAS server:
+  #labelSelector: "sas.com/cas-server-default"
+  version: v1alpha1
+---
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: launcher-job-python-transformer
+patch: |-
+  # Add  volume
+  - op: add
+    path: /template/spec/volumes/-
+    value: { name: shared-pvc, persistentVolumeClaim: {claimName: comp-cas-volume-claim }}
+
+  # Add mount path
+  - op: add
+    path: /template/spec/containers/0/volumeMounts/-
+    value:
+      name: comp-cas-volume-claim
+      mountPath: /sas/mnt
+      readOnly: false
+
+target:
+  kind: PodTemplate
+  name: sas-launcher-job-config
+  version: v1
+---
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: compute-job-sharedpvc-transformer
+patch: |-
+  # Add  volume
+  - op: add
+    path: /template/spec/volumes/-
+    value: { name: shared-pvc, persistentVolumeClaim: {claimName: comp-cas-volume-claim }}
+
+  # Add mount path 
+  - op: add
+    path: /template/spec/containers/0/volumeMounts/-
+    value:
+      name: comp-cas-volume-claim
+      mountPath: /sas/mnt
+      readOnly: false
+target:
+  kind: PodTemplate
+  name: sas-compute-job-config
+  version: v1

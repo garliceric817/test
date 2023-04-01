@@ -9,7 +9,7 @@ patch: |-
    - op: replace
      path: /spec/workers
      value:
-       28
+       2
 target:
   group: viya.sas.com
   kind: CASDeployment

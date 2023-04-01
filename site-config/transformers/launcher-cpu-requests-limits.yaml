@@ -12,16 +12,16 @@ metadata:
 patch: |-
   - op: add
     path: /metadata/annotations/launcher.sas.com~1default-cpu-request
-    value: {{ DEFAULT-CPU-REQUEST }}
+    value: 5
   - op: add
     path: /metadata/annotations/launcher.sas.com~1max-cpu-request
-    value: {{ MAX-CPU-REQUEST }}
+    value: 2
   - op: add
     path: /metadata/annotations/launcher.sas.com~1default-cpu-limit
-    value: {{ DEFAULT-CPU-LIMIT }}
+    value: 5
   - op: add
     path: /metadata/annotations/launcher.sas.com~1max-cpu-limit
-    value: {{ MAX-CPU-LIMIT }}
+    value: 5
 target:
   kind: PodTemplate
   labelSelector: sas.com/template-intent=sas-launcher

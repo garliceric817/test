@@ -3,6 +3,6 @@ kind: ConfigMapGenerator
 metadata:
   name: ingress-input
 literals:
-- INGRESS_HOST=*
+- INGRESS_HOST=tksviya.unx.sas.com
 - INGRESS_APIVERSION=networking.istio.io/v1alpha3
 - INGRESS_KIND=VirtualService

@@ -21,19 +21,19 @@ patch: |-
   - op: add
     path: /spec/controllerTemplate/spec/containers/0/resources/limits
     value:
-      memory: 64Gi
+      memory: 55Gi
   - op: replace
     path: /spec/controllerTemplate/spec/containers/0/resources/requests/memory
     value:
-      64Gi
+      55Gi
   - op: add
     path: /spec/controllerTemplate/spec/containers/0/resources/limits/cpu
     value:
-      15
+      7
   - op: replace
     path: /spec/controllerTemplate/spec/containers/0/resources/requests/cpu
     value:
-      15
+      7
 target:
   group: viya.sas.com
   kind: CASDeployment

@@ -28,7 +28,7 @@ patch: |-
         number: 443
         protocol: HTTPS
       tls:
-        credentialName: THIS-SHOULD-BE-PATCHED-WITH-CUSTOMER-PROVIDED-ISTIO-GATWAY-CERTIFICATE-SDS-YAML
+        credentialName: sas-ingress-certificate
         mode: SIMPLE
 target:
   Kind: Gateway

@@ -1,8 +1,8 @@
 namespace: viya4deploy
 resources:
 - sas-bases/base
-- sas-bases/overlays/network/networking.k8s.io 
-  #- sas-bases/overlays/network/istio
+  #- sas-bases/overlays/network/networking.k8s.io 
+- sas-bases/overlays/network/istio
 - site-config/resources/openssl-generated-ingress-certificate.yaml
 - sas-bases/overlays/cas-server
 - sas-bases/overlays/internal-postgres
@@ -10,7 +10,7 @@ resources:
 # If your deployment contains programming-only offerings only, comment out the next line
 - sas-bases/overlays/internal-elasticsearch
 - sas-bases/overlays/update-checker
-  #- sas-bases/overlays/cas-server/auto-resources 
+- sas-bases/overlays/cas-server/auto-resources 
 - site-config/sas-microanalytic-store/astores/resources.yaml
   #- site-config/resources/sas-patroni-custom-config.yaml
 #- site-config/sas-model-publish/kaniko
@@ -20,8 +20,7 @@ resources:
 - site-config/state-transfer  
 configurations:
 - sas-bases/overlays/required/kustomizeconfig.yaml
-- site-config/configurations/compute-server-add-nfs-mount.yaml
-
+- site-config/configurations/compute-server-add-pv-mount.yaml
 transformers:
 - site-config/transformers/cas-manage-workers.yaml ## only for MPP
 - site-config/transformers/cas-manage-backup.yaml  ## only for MPP
@@ -29,12 +28,14 @@ transformers:
 - sas-bases/overlays/internal-elasticsearch/sysctl-transformer.yaml
 - site-config/transformers/postgres-replicas-transformer.yaml
 ## Customize for launcher
+#- site-config/transformers/launcher-cpu-requests-limits.yaml
 - site-config/transformers/launcher-memory-requests-limits.yaml
 - site-config/transformers/launcher-user-process-limit.yaml
 - site-config/transformers/launcher-super-user-process-limit.yaml
   #- site-config/transformers/sas-postgres-custom-config-transformer.yaml
   ## Python
   #- site-config/sas-open-source-config/python/python-transformer.yaml
+  #- site-config/transformers/cas-enable-host.yaml
 - sas-bases/overlays/startup/ordered-startup-transformer.yaml
 - sas-bases/overlays/required/transformers.yaml
 - site-config/transformers/mirror.yaml
@@ -51,14 +52,14 @@ transformers:
 #- site-config/transformers/cas-enable-external-services.yaml
   #- site-config/transformers/cas-auto-restart.yaml
 - site-config/state-transfer/support-state-transfer.yaml
-- site-config/transformers/cas-manage-cpu-and-memory.yaml
+  #- site-config/transformers/cas-manage-cpu-and-memory.yaml
 ## Tuning memory
 - site-config/rabbitmq/rabbitmq-modify-memory.yaml
 # Increase user's launcher number limit
 #- site-config/sas-launcher/configure/launcher-user-process-limit.yaml
 
 # Mount information
-# - site-config/transformers/cas-add-host-mount.yaml
+- site-config/transformers/cas-add-pv-mount.yaml
 #- site-config/transformers/launcher-nfs-mount.yaml
 ## Test for modify memory
 #- site-config/transformers/modify_compute_resource.yaml
@@ -70,10 +71,10 @@ transformers:
 
 
 components:
-- sas-bases/components/security/core/base/front-door-tls 
-- sas-bases/components/security/network/networking.k8s.io/ingress/nginx.ingress.kubernetes.io/front-door-tls 
-#- sas-bases/components/security/core/base/front-door-tls
-#- sas-bases/components/security/network/networking.istio.io/virtualservice/front-door-tls
+  #- sas-bases/components/security/core/base/front-door-tls 
+  #- sas-bases/components/security/network/networking.k8s.io/ingress/nginx.ingress.kubernetes.io/front-door-tls 
+- sas-bases/components/security/core/base/front-door-tls
+- sas-bases/components/security/network/networking.istio.io/virtualservice/front-door-tls
 
 patches:
 - path: site-config/patches/storageclass.yaml 

@@ -1,0 +1,24 @@
+# This block of code is for mounting NFS persistentVolumeClaims
+# to a compute session
+---
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: comp-add-host-mount
+patch: |-
+    - op: add
+      path: /spec/controllerTemplate/spec/volumes/-
+      value:
+        name: comp-shared-pvc
+        persistentVolumeClaim:
+                claimName: comp-cas-volume-claim
+    - op: add
+      path: /spec/controllerTemplate/spec/containers/0/volumeMounts/-
+      value:
+        name: comp-shared-pvc
+        mountPath: /sas/mnt
+        readOnly: false
+target:
+  kind: PodTemplate
+  version: v1
+  labelSelector: sas.com/template-intent=sas-launcher
